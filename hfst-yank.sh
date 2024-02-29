@@ -4,7 +4,7 @@
 
 #make it check if hfst is installed
 #I think this just needs to be done by user right bc i dont want a script to invoke sudo, or do i?
-
+#testing pushing from laptop
 
 if [ -z $1 ]
 then
