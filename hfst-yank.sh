@@ -3,6 +3,7 @@
 #ok I would like a script that can download the giellalt and make the yankerino all in one
 
 #make it check if hfst is installed
+#I think this just needs to be done by user right bc i dont want a script to invoke sudo, or do i?
 
 
 if [ -z $1 ]
