@@ -2,9 +2,17 @@
 
 #ok I would like a script that can download the giellalt and make the yankerino all in one
 
+#TODO check if the directory already exists, not essential just avoids error msgs
+
+#TODO the webpage says to get the deb files but the pkg seems to be in the debian/ubuntu repos if you just do sudo apt install hfst???? but it doesnt mention it?
+#doing now - go through learn to use grep, find where these roman numeral dates are coming from
 #make it check if hfst is installed
 #I think this just needs to be done by user right bc i dont want a script to invoke sudo, or do i?
 #testing pushing from laptop
+if ! command -v hfst-lexc 2>/dev/null; then
+    echo "must install hfst by doing xyz thing"
+    exit 1
+fi
 
 if [ -z $1 ]
 then
@@ -38,10 +46,11 @@ done
 
 for f in lang-$1/src/fst/morphology/stems/*.lexc
 do
-    if [ "$f" = "lang-$1/src/fst/morphology/stems/numerals.lexc" ] | [ "$f" = "lang-$1/src/fst/morphology/stems/verbs.lexc" ] | [ "$f" = "lang-$1/src/fst/morphology/stems/abbreviations.lexc" ]
-    
+    #if [ "$f" = "lang-$1/src/fst/morphology/stems/numerals.lexc" ] || [ "$f" = "lang-$1/src/fst/morphology/stems/verbs.lexc" ] || [ "$f" = "lang-$1/src/fst/morphology/stems/abbreviations.lexc" ]
+    #finnish seems only to break if it includes determiners lexc file, why is the determiners file broken???
+    if [ "$f" = "lang-$1/src/fst/morphology/stems/numerals.lexc" ] || [ "$f" = "lang-$1/src/fst/morphology/stems/abbreviations.lexc" ] || [ "$f" = "lang-$1/src/fst/morphology/stems/determiners.lexc" ]
     then
-        echo ""
+        echo "not acceptable file! : $f"
     else
         lex_files+=("$f")
         echo "lex file: $f"
@@ -62,11 +71,14 @@ done
 
 echo ${lex_files[*]}
 
+#the error is here, it generates an empty lex.hfst transducer
+#hfst-lexc ${lex_files[*]} -o lang-$1/src/fst/morphology/lex.hfst
+hfst-lexc -v ${lex_files[*]} | hfst-fst2txt | hfst-txt2fst -o lang-$1/src/fst/morphology/lex.hfst
 
-hfst-lexc ${lex_files[*]} -o lang-$1/src/fst/morphology/lex.hfst
+#hfst-edit-metadata -i lang-$1/src/fst/morphology/lex.hfst -o lang-$1/src/fst/morphology/lex-edit.hfst
 
 hfst-twolc lang-$1/src/fst/morphology/phonology.twolc -o lang-$1/src/fst/morphology/twol.hfst
 
-hfst-compose-intersect lang-$1/src/fst/morphology/lex.hfst lang-$1/src/fst/morphology/twol.hfst -o lang-$1/src/fst/morphology/$1.hfst
+hfst-compose-intersect lang-$1/src/fst/morphology/lex.hfst lang-$1/src/fst/morphology/twol.hfst | hfst-fst2txt | hfst-txt2fst -o lang-$1/src/fst/morphology/$1.hfst
 
 hfst-fst2strings lang-$1/src/fst/morphology/$1.hfst -o "$1-corpus.txt" -c 1
