@@ -33,7 +33,7 @@ lex_files+=("lang-$1/src/fst/morphology/root.lexc")
 echo "root file: lang-$1/src/fst/morphology/root.lexc"
 for f in lang-$1/src/fst/morphology/*.lexc
 do
-    if [ "$f" = "lang-$1/src/fst/morphology/root.lexc" ] || [ "$f" = "lang-$1/src/fst/morphology/compounding.lexc" ]
+    if [ "$f" = "lang-$1/src/fst/morphology/root.lexc" ] #|| [ "$f" = "lang-$1/src/fst/morphology/compounding.lexc" ]
     
     then
         echo ""
@@ -48,7 +48,8 @@ for f in lang-$1/src/fst/morphology/stems/*.lexc
 do
     #if [ "$f" = "lang-$1/src/fst/morphology/stems/numerals.lexc" ] || [ "$f" = "lang-$1/src/fst/morphology/stems/verbs.lexc" ] || [ "$f" = "lang-$1/src/fst/morphology/stems/abbreviations.lexc" ]
     #finnish seems only to break if it includes determiners lexc file, why is the determiners file broken???
-    if [ "$f" = "lang-$1/src/fst/morphology/stems/numerals.lexc" ] || [ "$f" = "lang-$1/src/fst/morphology/stems/abbreviations.lexc" ] || [ "$f" = "lang-$1/src/fst/morphology/stems/determiners.lexc" ]|| [ "$f" = "lang-$1/src/fst/morphology/stems/digits.lexc" ]
+    #german breaks on the verbs, gotta take out verbs for german for some reason, it repeats the same thing over and over
+    if [ "$f" = "lang-$1/src/fst/morphology/stems/numerals.lexc" ] || [ "$f" = "lang-$1/src/fst/morphology/stems/abbreviations.lexc" ] || [ "$f" = "lang-$1/src/fst/morphology/stems/determiners.lexc" ] || [ "$f" = "lang-$1/src/fst/morphology/stems/digits.lexc" ] || [ "$f" = "lang-$1/src/fst/morphology/stems/verbs.lexc" ]
     then
         echo "not acceptable file! : $f"
     else
@@ -81,4 +82,4 @@ hfst-twolc -v lang-$1/src/fst/morphology/phonology.twolc -o lang-$1/src/fst/morp
 
 hfst-compose-intersect -v lang-$1/src/fst/morphology/lex.hfst lang-$1/src/fst/morphology/twol.hfst | hfst-fst2txt | hfst-txt2fst -o lang-$1/src/fst/morphology/$1.hfst
 
-hfst-fst2strings -v lang-$1/src/fst/morphology/$1.hfst -o "$1-corpus.txt" -c 1
+hfst-fst2strings -v lang-$1/src/fst/morphology/$1.hfst -o "$1-corpus.txt" -c 0
