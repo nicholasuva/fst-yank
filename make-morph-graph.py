@@ -2,6 +2,10 @@
 
 """
 this will basically show which morph features are in which langs in the GiellaLT tools
+
+next steps 
+    -take out the incoming files
+    -make the graph properly sized
 """
 
 import glob
@@ -18,11 +22,12 @@ def dl_lang(lang_code):
 
 def find_lexc_files(lang_code):
     lexc_files = glob.glob("lang-"+lang_code+"/src/fst/morphology/**/*.lexc", recursive=True)
-    print(lexc_files)
+    #print(lexc_files)
     truncated_files = []
     for file in lexc_files:
-        valid_file = re.search(r'^lang-.*/src/fst/morphology/(.*\.lexc)$', file)
-        truncated_files.append(valid_file.group(1))
+        valid_file = re.search(r'^lang-.*/src/fst/morphology(/|/stems/|/affixes/)([a-zA-Z0-9]+\.lexc)$', file)
+        try: truncated_files.append(str(valid_file.group(1))+str(valid_file.group(2)))
+        except: print(valid_file)
     return lexc_files, truncated_files
 
 
@@ -64,6 +69,9 @@ def heatmap(data, row_labels, col_labels, ax=None,
     **kwargs
         All other arguments are forwarded to `imshow`.
     """
+    #trying again to change scale
+    #plt.figure(figsize=(10,10))
+
 
     if ax is None:
         ax = plt.gca()
@@ -85,6 +93,8 @@ def heatmap(data, row_labels, col_labels, ax=None,
     #this is nick trying to change the scale
     #ax.set_ylim([0,5])
     #that doesnt seem to work
+
+    
 
 
     # Let the horizontal axes labeling appear on top.
@@ -170,7 +180,7 @@ def format_all_data(list_of_lang_codes):
     """
     all_lang_dict = {}
     for lang_code in list_of_lang_codes:
-        dl_lang(lang_code)
+        ###dl_lang(lang_code)
         this_lexc_list, trunc_list = find_lexc_files(lang_code)
         this_lexc_heat_dict = all_files_numlines(this_lexc_list, trunc_list)
         all_lang_dict[lang_code] = this_lexc_heat_dict
@@ -214,7 +224,7 @@ all_giellalt_langs = [('aka', 'Akan'),
                       ('ara', 'Arabic'),
                       ('aym', 'Aymara'),
                       ('bak', 'Bashkir'),
-                      ('bla', 'Siksika'),
+                      #('bla', 'Siksika'), codec error reading file
                       ('bul', 'Bulgarian'),
                       ('bxr', 'Russia Buriat'),
                       ('ces', 'Czech'),
@@ -259,83 +269,83 @@ all_giellalt_langs = [('aka', 'Akan'),
                       ('kal', 'Kalaallisut'),
                       ('kca', 'Khanty'),
                       ('kek', 'Qʼeqchiʼ'),
-                      ('khk', 'Bulgarian'),
-                      ('kio', 'Siksika'),
-                      ('kjh', 'Bulgarian'),
-                      ('kmr', 'Siksika'),
-                      ('koi', 'Bulgarian'),
-                      ('kpv', 'Siksika'),
-                      ('krl', 'Bulgarian'),
-                      ('lav', 'Siksika'),
-                      ('lit', 'Bulgarian'),
-                      ('liv', 'Siksika'),
-                      ('luo', 'Bulgarian'),
-                      ('lut', 'Siksika'),
-                      ('mdf', 'Bulgarian'),
-                      ('mhr', 'Siksika'),
-                      ('mns', 'Bulgarian'),
-                      ('moh', 'Siksika'),
-                      ('mpj', 'Bulgarian'),
-                      ('mrj', 'Siksika'),
-                      ('mya', 'Bulgarian'),
-                      ('myv', 'Siksika'),
-                      ('ndl', 'Bulgarian'),
-                      ('nds', 'Siksika'),
-                      ('nio', 'Bulgarian'),
-                      ('nno', 'Siksika'),
-                      ('nno-x-ext-apertium', 'Bulgarian'),
-                      ('nob', 'Siksika'),
-                      ('non', 'Bulgarian'),
-                      ('nso', 'Siksika'),
-                      ('oji', 'Bulgarian'),
-                      ('olo', 'Siksika'),
-                      ('pma', 'Bulgarian'),
-                      ('quc-x-ext-apertium', 'Siksika'),
-                      ('qya', 'Bulgarian'),
-                      ('rmf', 'Siksika'),
-                      ('rmg', 'Bulgarian'),
-                      ('rmu-x-testing', 'Siksika'),
-                      ('rmy', 'Bulgarian'),
-                      ('ron', 'Siksika'),
-                      ('rue', 'Bulgarian'),
-                      ('rup', 'Siksika'),
-                      ('rus', 'Bulgarian'),
-                      ('sel', 'Siksika'),
-                      ('sjd', 'Bulgarian'),
-                      ('sje', 'Siksika'),
-                      ('sjt', 'Bulgarian'),
-                      ('sju-x-sydlapsk', 'Siksika'),
-                      ('skf', 'Bulgarian'),
-                      ('sma', 'Siksika'),
-                      ('sme', 'Bulgarian'),
-                      ('smj', 'Siksika'),
-                      ('smn', 'Bulgarian'),
-                      ('sms', 'Siksika'),
-                      ('som', 'Bulgarian'),
-                      ('spa-x-ext-apertium', 'Siksika'),
-                      ('sqi', 'Bulgarian'),
-                      ('srs', 'Siksika'),
-                      ('sto', 'Bulgarian'),
-                      ('swe', 'Siksika'),
-                      ('tat', 'Bulgarian'),
-                      ('tau', 'Siksika'),
-                      ('tel', 'Bulgarian'),
-                      ('tgl', 'Siksika'),
-                      ('tha', 'Bulgarian'),
-                      ('tir', 'Siksika'),
-                      ('tku', 'Bulgarian'),
-                      ('tlh', 'Siksika'),
-                      ('tqn', 'Bulgarian'),
-                      ('tur-x-ext-trmorph', 'Siksika'),
-                      ('tuv', 'Bulgarian'),
-                      ('tyv', 'Siksika'),
-                      ('udm', 'Bulgarian'),
-                      ('vep', 'Siksika'),
-                      ('vot', 'Bulgarian'),
-                      ('vot-x-ext-kkankain', 'Siksika'),
-                      ('vro', 'Bulgarian'),
-                      ('xak', 'Siksika'),
-                      ('xal', 'Bulgarian'),
+                      ('khk', 'Halh Mongolian'),
+                      ('kio', 'Kiowa'),
+                      ('kjh', 'Khakas'),
+                      ('kmr', 'Northern Kurdish'),
+                      ('koi', 'Komi-Permyak'),
+                      ('kpv', 'Komi-Zyrian'),
+                      ('krl', 'Karelian'),
+                      ('lav', 'Latvian'),
+                      ('lit', 'Lithuanian'),
+                      ('liv', 'Liv'),
+                      ('luo', 'Luo (Kenya and Tanzania)'),
+                      ('lut', 'Lushootseed'),
+                      ('mdf', 'Moksha'),
+                      ('mhr', 'Eastern Mari'),
+                      ('mns', 'Mansi'),
+                      ('moh', 'Mohawk'),
+                      ('mpj', 'Wangkajunga'),
+                      ('mrj', 'Western Mari'),
+                      ('mya', 'Burmese'),
+                      ('myv', 'Erzya'),
+                      ('ndl', 'Ndolo'),
+                      ('nds', 'Low German'),
+                      ('nio', 'Nganasan'),
+                      ('nno', 'Norwegian Nynorsk'),
+                      ('nno-x-ext-apertium', 'Norwegian Nynorsk (Apertium)'),
+                      ('nob', 'Norwegian Bokmål'),
+                      ('non', 'Old Norse'),
+                      ('nso', 'Pedi'),
+                      ('oji', 'Ojibwa'),
+                      ('olo', 'Livvi'),
+                      ('pma', 'Paama'),
+                      ('quc-x-ext-apertium', 'K\'iche\' (Apertium)'),
+                      ('qya', 'Quenya'),
+                      ('rmf', 'Kalo Finnish Romani'),
+                      ('rmg', 'Traveller Norwegian'),
+                      ('rmu-x-testing', 'Tavringer Romani'),
+                      ('rmy', 'Vlax Romani'),
+                      ('ron', 'Romanian'),
+                      ('rue', 'Rusyn'),
+                      ('rup', 'Macedo-Romanian/Aromanian'),
+                      ('rus', 'Russian'),
+                      ('sel', 'Selkup'),
+                      ('sjd', 'Kildin Sami'),
+                      ('sje', 'Pite Sami'),
+                      ('sjt', 'Ter Sami'),
+                      ('sju-x-sydlapsk', '18th century Southern Saami'),
+                      ('skf', 'Sakirabiá'),
+                      ('sma', 'Southern Sami'),
+                      ('sme', 'Northern Sami'),
+                      ('smj', 'Lule Sámi'),
+                      ('smn', 'Inari Sami'),
+                      ('sms', 'Skolt Sami'),
+                      ('som', 'Somali'),
+                      ('spa-x-ext-apertium', 'Spanish'),
+                      ('sqi', 'Albanian'),
+                      ('srs', 'Tsuut\'ina (Sarsi)'),
+                      ('sto', 'Stoney'),
+                      ('swe', 'Swedish'),
+                      ('tat', 'Tatar'),
+                      ('tau', 'Upper Tanana'),
+                      ('tel', 'Telugu'),
+                      ('tgl', 'Tagalog'),
+                      ('tha', 'Thai'),
+                      ('tir', 'Tigrinya'),
+                      ('tku', 'Upper Necaxa Totonac'),
+                      ('tlh', 'Klingon'),
+                      ('tqn', 'Sahaptin Tenino'),
+                      ('tur-x-ext-trmorph', 'Turkish'),
+                      ('tuv', 'Turkana'),
+                      ('tyv', 'Tuvinian'),
+                      ('udm', 'Udmurt'),
+                      ('vep', 'Veps'),
+                      ('vot', 'Votic'),
+                      ('vot-x-ext-kkankain', 'Votic (kkankain)'),
+                      ('vro', 'Võro'),
+                      ('xak', 'Maku'),
+                      ('xal', 'Kalmyk'),
                       ('xin-x-qda', 'Guazacapán'),
                       ('xwo', 'Written Oirat'),
                       ('yrk', 'Nenets'),
@@ -349,14 +359,25 @@ def main():
     #test_list = find_lexc_files(lang_code)
     #this_list = all_files_numlines(test_list)
     #print(this_list)
-    x_label, y_label, data = format_all_data(['eng', 'rus', 'deu', 'spa'])
 
-    fig, ax = plt.subplots()
+
+    codes, names = zip(*all_giellalt_langs)
+    print(codes)
+
+
+
+    #x_label, y_label, data = format_all_data(['eng', 'rus', 'deu', 'fin', 'izh'])
+    x_label, y_label, data = format_all_data(codes)
+    print(x_label)
+    fig, ax = plt.subplots(figsize=(20,20))
     im, cbar = heatmap(data, y_label, x_label, ax=ax, cmap='YlGn', cbarlabel='test', norm='log')
     #texts = annotate_heatmap(im, valfmt="{x:.1f}")
     fig.tight_layout()
+    #trying again to change scale
+    #plt.figure(figsize=(10,10))
     plt.show()
     plt.savefig('test.png')
+
 
     return
 
